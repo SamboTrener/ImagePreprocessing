@@ -1,5 +1,5 @@
 import cv2
-import keyboardф
+import keyboard
 from tkinter import *
 from tkinter import ttk
 import os
@@ -9,11 +9,9 @@ test_img_path = 'D:/assets/bell_raw'
 
 final_img_path = 'D:/assets/bell_ready'
 
-iter = 0
-
 def mouse_crop(event, x, y, flags, param):
 
-    global x_start, y_start, x_end, y_end, cropping, iter
+    global x_start, y_start, x_end, y_end, cropping
 
     if event == cv2.EVENT_LBUTTONDOWN:
         x_start, y_start, x_end, y_end = x, y, x, y
@@ -42,45 +40,33 @@ def mouse_crop(event, x, y, flags, param):
             gY = cv2.convertScaleAbs(gY)
 
             sobelxy = cv2.addWeighted(gX, 0.5, gY, 0.5, 0)
-            iter = iter + 1
 
-            labelName = getLabelName()
+            labelName, imageName = getLabelAndImageNames()
 
-            imageName = getImageName()
 
             cv2.imwrite(final_img_path + '/' + labelName.get() + "." + imageName.get() + ".png", sobelxy)
 
-def getLabelName():
+def getLabelAndImageNames():
     root = Tk()
     root.title("window")
     root.geometry("250x150")
 
-    message = StringVar()
+    labelName = StringVar()
+    imageName = StringVar()
 
-    entry = ttk.Entry(textvariable=message)
+    text = ttk.Label()
+    entry = ttk.Entry(textvariable=labelName)
+    entry.pack(anchor=NW, padx=6, pady=6)
+
+    entry = ttk.Entry(textvariable=imageName)
     entry.pack(anchor=NW, padx=6, pady=6)
 
     Button(root, text="Quit", command=root.destroy).pack()
 
     root.mainloop()
 
-    return message
+    return labelName, imageName
 
-def getImageName():
-    root = Tk()
-    root.title("window")
-    root.geometry("250x150")
-
-    message = StringVar()
-
-    entry = ttk.Entry(textvariable=message)
-    entry.pack(anchor=NW, padx=6, pady=6)
-
-    Button(root, text="Quit", command=root.destroy).pack()
-
-    root.mainloop()
-
-    return message
 
 for rawImage in os.listdir(test_img_path):
     cropping = False
