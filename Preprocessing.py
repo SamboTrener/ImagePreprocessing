@@ -1,5 +1,5 @@
 import cv2
-import keyboard
+import keyboardф
 from tkinter import *
 from tkinter import ttk
 import os
@@ -46,7 +46,9 @@ def mouse_crop(event, x, y, flags, param):
 
             labelName = getLabelName()
 
-            cv2.imwrite(final_img_path + '/' + labelName.get() + "." + str(iter) + ".png", sobelxy)
+            imageName = getImageName()
+
+            cv2.imwrite(final_img_path + '/' + labelName.get() + "." + imageName.get() + ".png", sobelxy)
 
 def getLabelName():
     root = Tk()
@@ -64,12 +66,27 @@ def getLabelName():
 
     return message
 
+def getImageName():
+    root = Tk()
+    root.title("window")
+    root.geometry("250x150")
+
+    message = StringVar()
+
+    entry = ttk.Entry(textvariable=message)
+    entry.pack(anchor=NW, padx=6, pady=6)
+
+    Button(root, text="Quit", command=root.destroy).pack()
+
+    root.mainloop()
+
+    return message
 
 for rawImage in os.listdir(test_img_path):
     cropping = False
     x_start, y_start, x_end, y_end = 0, 0, 0, 0
     image = cv2.imread(test_img_path + '/' + rawImage)
-    image = cv2.resize(image, (int(image.shape[1] * 0.2), int(image.shape[0] * 0.2)), cv2.INTER_LINEAR)
+    image = cv2.resize(image, (int(image.shape[1] * 0.9), int(image.shape[0] * 0.9)), cv2.INTER_LINEAR)
     oriImage = image.copy()
 
 
