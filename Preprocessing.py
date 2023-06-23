@@ -3,7 +3,7 @@ import keyboard
 from tkinter import *
 from tkinter import ttk
 import os
-
+import uuid
 
 test_img_path = 'D:/assets/bell_raw'
 
@@ -43,8 +43,8 @@ def mouse_crop(event, x, y, flags, param):
 
             labelName, imageName = getLabelAndImageNames()
 
-
-            cv2.imwrite(final_img_path + '/' + labelName.get() + "." + imageName.get() + ".png", sobelxy)
+            image_id = uuid.uuid4()
+            cv2.imwrite(final_img_path + '/' + labelName.get() + "." + imageName.get() + "-" + str(image_id) + ".png", sobelxy)
 
 def getLabelAndImageNames():
     root = Tk()
@@ -72,7 +72,7 @@ for rawImage in os.listdir(test_img_path):
     cropping = False
     x_start, y_start, x_end, y_end = 0, 0, 0, 0
     image = cv2.imread(test_img_path + '/' + rawImage)
-    image = cv2.resize(image, (int(image.shape[1] * 0.9), int(image.shape[0] * 0.9)), cv2.INTER_LINEAR)
+    image = cv2.resize(image, (int(image.shape[1] * 1), int(image.shape[0] * 1)), cv2.INTER_LINEAR)
     oriImage = image.copy()
 
 
