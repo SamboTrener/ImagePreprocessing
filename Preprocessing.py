@@ -9,6 +9,8 @@ test_img_path = 'D:/assets/bell_raw'
 
 final_img_path = 'D:/assets/bell_ready'
 
+prevAddress = ""
+
 def mouse_crop(event, x, y, flags, param):
 
     global x_start, y_start, x_end, y_end, cropping
@@ -22,6 +24,7 @@ def mouse_crop(event, x, y, flags, param):
             x_end, y_end = x, y
 
     elif event == cv2.EVENT_LBUTTONUP:
+        global prevAddress
         x_end, y_end = x, y
         cropping = False
         refPoint = [(x_start, y_start), (x_end, y_end)]
@@ -43,29 +46,42 @@ def mouse_crop(event, x, y, flags, param):
 
             labelName, imageName = getLabelAndImageNames()
 
+            prevAddress = imageName
+
             image_id = uuid.uuid4()
-            cv2.imwrite(final_img_path + '/' + labelName.get() + "." + imageName.get() + "-" + str(image_id) + ".png", sobelxy)
+            cv2.imwrite(final_img_path + '/' + labelName + "." + imageName + "-" + str(image_id) + ".png", sobelxy)
 
 def getLabelAndImageNames():
     root = Tk()
     root.title("window")
-    root.geometry("250x150")
+    root.geometry("500x300")
 
     labelName = StringVar()
     imageName = StringVar()
 
-    text = ttk.Label()
-    entry = ttk.Entry(textvariable=labelName)
-    entry.pack(anchor=NW, padx=6, pady=6)
+    l1 = ttk.Label(text="Введите название лейбла")
+    l1.pack(anchor=NW, padx=6, pady=6)
+
+    combo = ttk.Combobox(
+        textvariable=labelName,
+        values=["open", "close", "bell", "fan","up","down"]
+    )
+    combo.pack(anchor=NW, padx=6, pady=6,fill=X)
+    #entry = ttk.Entry(textvariable=labelName)
+    #entry.pack(anchor=NW, padx=6, pady=6)
+
+    l2 = ttk.Label(text="Введите Название формата Город.Улица.Дом.Подъезд")
+    l2.pack(anchor=NW, padx=6, pady=6)
 
     entry = ttk.Entry(textvariable=imageName)
-    entry.pack(anchor=NW, padx=6, pady=6)
+    entry.insert(0,prevAddress)
+    entry.pack(anchor=NW, padx=6, pady=6,fill=X)
 
     Button(root, text="Quit", command=root.destroy).pack()
 
     root.mainloop()
 
-    return labelName, imageName
+    return labelName.get(), imageName.get()
 
 
 for rawImage in os.listdir(test_img_path):
